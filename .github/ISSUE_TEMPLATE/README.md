@@ -1,85 +1,59 @@
 # Issue Templates
 
-This directory contains GitHub issue templates for Infusal repositories.
+The templates in this folder are **org-level defaults** for the entire
+`infusal` organisation. They appear automatically in every `infusal/*`
+repository's "New issue" picker unless that repo defines its own templates.
 
-## Using Issue Templates
+## Available templates
 
-When creating a new issue on GitHub, you'll be prompted to select from the available templates:
+### Story (synced from `infusal/roadmap`)
 
-### 1. Feature
+A **repo-specific unit of work** — roughly a phase within one repo, with its
+own acceptance criteria.
 
-Use for proposing new features or enhancements that may span multiple repositories.
+- **Required:** summary, acceptance criteria
+- **Optional:** parent Phase, parent Feature, primary Capability, notes
 
-**Key sections:**
-- Summary of the feature
-- Affected packages (helps with routing and visibility)
-- Cross-repository dependencies and blocking relationships
-- Acceptance criteria
-- Implementation notes
+### Task (synced from `infusal/roadmap`)
 
-**See also:** [GitHub Issues Strategy - Feature Epics](https://portal.infusal.io/development/team-workflow/github-issues-strategy/#2-feature-epics-across-repositories)
+A **commit-sized work item** — roughly one task per commit.
 
-### 2. Bug
+- **Required:** summary
+- **Optional:** parent Story, notes
 
-Use for reporting defects, regressions, or unexpected behavior.
+### Bug
 
-**Key sections:**
-- Clear summary and reproduction steps
-- Expected vs actual behavior
-- Environment details (version, OS, etc.)
-- Logs and error messages
-- Impact assessment (blocking, high, medium, low priority)
+A report of a **defect, regression, or unexpected behavior**.
 
-**See also:** [GitHub Issues Strategy - Priority Labels](https://portal.infusal.io/development/team-workflow/github-issues-strategy/#priority-labels)
+- **Required:** summary, reproduction steps, expected vs actual behavior
+- **Optional:** environment, logs, impact, notes
 
-### 3. Chore
+## Issue hierarchy
 
-Use for maintenance tasks, dependency updates, documentation, or internal improvements.
-
-**Key sections:**
-- Type of chore (dependency update, docs, code quality, etc.)
-- Affected package
-- Details and acceptance criteria
-- Cross-repository coordination if needed
-
-**See also:** [Development Workflow - Dependency Management](https://portal.infusal.io/development/team-workflow/dependency-management/)
-
-## Labeling
-
-All issues should include:
-
-1. **Package label** (required): `pkg:*` to indicate which package(s) are affected
-   - Examples: `pkg:api`, `pkg:plugin-sdk`, `pkg:portal`
-   - See [Package Labels](https://portal.infusal.io/development/team-workflow/github-issues-strategy/#package-labels-required) for complete list
-
-2. **Type label** (required): Pre-filled based on template but can be modified
-   - `type:feature`, `type:bug`, `type:chore`, `type:enhancement`, `type:refactor`, `type:docs`
-
-3. **Priority label** (recommended): `priority:critical`, `priority:high`, `priority:medium`, `priority:low`
-
-4. **Status label** (optional): `status:ready`, `status:blocked`, `status:review`
-
-## Dependency Linking
-
-For issues that have dependencies on other issues:
-
-1. Use the "Blocks/Blocked by" relationship in GitHub
-2. Include the dependency information in the issue description
-3. See [Explicit Dependency Linking](https://portal.infusal.io/development/team-workflow/github-issues-strategy/#3-explicit-dependency-linking) for details
-
-## Creating Issues Programmatically
-
-If you need to create issues via the GitHub API or CLI:
-
-```bash
-# Using gh CLI
-gh issue create --template feature --title "Your title"
-gh issue create --template bug --title "Your title"
-gh issue create --template chore --title "Your title"
+```
+Capability   (portal)
+ └─ Epic     (infusal/roadmap)
+     └─ Feature  (infusal/roadmap)
+         └─ Phase    (infusal/roadmap; multi-repo only)
+             └─ Story    (code repos)
+                 └─ Task     (code repos)
 ```
 
-## References
+Bug is orthogonal — defects exist outside the planning tree.
 
-- [Team Workflow - GitHub Issues Strategy](https://portal.infusal.io/development/team-workflow/github-issues-strategy/)
-- [Team Workflow - Development Workflow](https://portal.infusal.io/development/team-workflow/development-workflow/)
-- [GitHub Issue Docs](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/about-issue-and-pull-request-templates)
+For the full design rationale see ADR-019 (when written) in
+[`infusal/portal/content/architecture/adr/`](https://github.com/infusal/portal/tree/main/content/architecture/adr).
+
+## Editing templates
+
+| Template | Edit here? |
+|---|---|
+| `story.yml`, `task.yml` | ❌ — golden source lives in `infusal/roadmap/template-sources/`. An auto-PR will land changes here. |
+| `bug.yml` | ✅ — owned by this repo, edit directly. |
+
+## Type field
+
+Each template sets `type:` so the Issue Type chip is applied automatically.
+Issue Types are defined at the org level
+(<https://github.com/organizations/infusal/settings/issue-types>) — if the
+chip does not appear, the type may be missing from the org configuration.

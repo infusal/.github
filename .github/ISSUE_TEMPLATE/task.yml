@@ -1,0 +1,31 @@
+name: Task
+description: Commit-sized work item (≈ one task per commit)
+title: "[Task] "
+type: Task
+labels: ["task"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: >
+        What does this Task do? Keep it scoped to ~one commit's worth
+        of change.
+    validations:
+      required: true
+
+  - type: input
+    id: parent-story
+    attributes:
+      label: Parent Story (optional)
+      description: >
+        Link to parent Story (e.g. `#nn` in this repo, or
+        `infusal/<repo>#nn` for cross-repo). Tasks usually belong to a
+        Story — stand-alone Tasks should be rare.
+      placeholder: "#nn"
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: Implementation hints, gotchas, acceptance details.
