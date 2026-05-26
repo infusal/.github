@@ -41,8 +41,7 @@ Capability   (portal)
 
 Bug is orthogonal — defects exist outside the planning tree.
 
-For the full design rationale see ADR-019 (when written) in
-[`infusal/portal/content/architecture/adr/`](https://github.com/infusal/portal/tree/main/content/architecture/adr).
+For the full design rationale see [ADR-024 — Issue tracking hierarchy](https://github.com/infusal/portal/blob/main/content/architecture/adr/024-issue-tracking-hierarchy.md).
 
 ## Editing templates
 
