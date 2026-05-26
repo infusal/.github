@@ -1,0 +1,76 @@
+name: Bug
+description: Report a defect, regression, or unexpected behavior
+title: "[Bug] "
+type: Bug
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Clear, concise description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Numbered steps that consistently reproduce the bug.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happens?
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (optional)
+      description: Relevant environment info — versions, OS, dependencies.
+      placeholder: |
+        Package version:
+        Environment: (dev / test / production)
+        OS:
+        Other:
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / error messages (optional)
+      description: Paste relevant logs, stack traces, error messages.
+      render: text
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: How severe is this bug?
+      options:
+        - Blocking (prevents work or causes data loss)
+        - High (degraded functionality)
+        - Medium (workaround available)
+        - Low (cosmetic or edge case)
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: Related issues, hypotheses about root cause, screenshots, etc.
