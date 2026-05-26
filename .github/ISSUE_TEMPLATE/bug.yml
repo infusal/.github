@@ -51,6 +51,13 @@ body:
         OS:
         Other:
 
+  - type: input
+    id: affected-area
+    attributes:
+      label: Affected area (optional)
+      description: Which subsystem, module, or file is involved? Helpful for triage in larger repos.
+      placeholder: "auth middleware / internal/migrations/ / ingestion plugin SDK"
+
   - type: textarea
     id: logs
     attributes:
@@ -59,15 +66,52 @@ body:
       render: text
 
   - type: dropdown
-    id: impact
+    id: reproducibility
     attributes:
-      label: Impact
-      description: How severe is this bug?
+      label: Reproducibility
+      description: How consistently does this happen?
       options:
-        - Blocking (prevents work or causes data loss)
-        - High (degraded functionality)
-        - Medium (workaround available)
-        - Low (cosmetic or edge case)
+        - Always
+        - Often (more than half the time)
+        - Sometimes (less than half the time)
+        - Once (could not reproduce after)
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: regression
+    attributes:
+      label: Regression
+      description: Did this used to work?
+      options:
+        - "Yes — used to work"
+        - "No — never worked"
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: last-known-good
+    attributes:
+      label: Last known good (optional — only if Regression = Yes)
+      description: The last version, commit, or date where this worked.
+      placeholder: "v2.43.0 / commit abc123 / 2026-04-15"
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: >
+        How severe is the defect itself? (Audience/customer impact is
+        tracked separately via labels.)
+      options:
+        - Critical (data loss / security / system unusable)
+        - High (major functionality broken)
+        - Medium (partial impairment, workaround possible)
+        - Low (cosmetic, edge case, no significant impact)
+    validations:
+      required: true
 
   - type: textarea
     id: notes
