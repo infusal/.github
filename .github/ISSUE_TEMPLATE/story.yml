@@ -2,8 +2,28 @@ name: Story
 description: Repo-specific unit of work (roughly a phase within one repo)
 title: "[Story] "
 type: Story
-labels: ["story"]
+labels: ["story", "area:engineering"]
 body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: |
+        Primary area of work. Usually inherits from the parent Feature, but kept here so
+        Stories can be filtered independently and so the convention applies uniformly.
+        Default is `engineering`. If you change this dropdown to anything other than
+        `engineering`, also manually remove the `area:engineering` label and add the
+        matching `area:<your-choice>` label after creating the issue.
+      options:
+        - engineering
+        - docs
+        - ux
+        - devops
+        - infra
+      default: 0
+    validations:
+      required: true
+
   - type: textarea
     id: summary
     attributes:
