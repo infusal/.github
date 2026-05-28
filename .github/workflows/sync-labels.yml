@@ -20,13 +20,8 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install gh CLI extension for label sync
-        run: |
-          gh extension install dwerner/gh-labels-sync || \
-          (echo "Extension unavailable — installing minimal local syncer" && \
-           npm install -g github-label-sync)
-        env:
-          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+      - name: Install github-label-sync
+        run: npm install -g github-label-sync
 
       - name: List infusal/* repos to sync
         id: repos
