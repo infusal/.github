@@ -1,0 +1,47 @@
+name: Bug intake priority default
+on:
+  issues:
+    types: [opened, edited]
+jobs:
+  default-priority:
+    if: contains(github.event.issue.labels.*.name, 'bug') || github.event.issue.labels.*.name == ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Priority from Severity (only if Priority is empty)
+        uses: actions/github-script@v7
+        env:
+          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+          BUGS_PROJECT_NUMBER: ${{ vars.BUGS_PROJECT_NUMBER }}
+        with:
+          script: |
+            // STUB — full implementation tracked in follow-up issue.
+            //
+            // This Action handles TWO concerns on Bug intake/edit:
+            //
+            // 1. Severity → Priority auto-fill (only if Priority is empty)
+            //    Mapping per spec §"Severity vs. Priority on Bugs":
+            //      S0 Critical → P0 Now
+            //      S1 High     → P1 This week
+            //      S2 Medium   → P2 This month
+            //      S3 Low      → P3 Backlog
+            //
+            // 2. Regression auto-label
+            //    If the Bug template marks Regression: yes, add the `regression` label.
+            //
+            // Implementation outline:
+            //   - Find the project item for this issue via addProjectV2ItemById /
+            //     organization.projectV2.items query
+            //   - Read Severity and Priority fields
+            //   - If Priority is empty, set per default mapping via
+            //     updateProjectV2ItemFieldValue
+            //   - Read Regression field; if "yes", apply the `regression` label
+            //     via issues.addLabels
+            //
+            // See spec: docs/superpowers/specs/2026-05-28-gh-projects-organization-design.md
+            //   §"Severity vs. Priority on Bugs"
+            //   §"Template changes" (Bug row)
+            //
+            // Follow-up issue: file in infusal/.github titled
+            //   "Implement Bug intake automation: Severity→Priority + regression label"
+            //   and link this workflow from it.
+            console.log("STUB: implement Severity → Priority default + regression label per spec");
