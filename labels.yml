@@ -1,0 +1,89 @@
+# Canonical label set for all infusal/* repos.
+# Synced by .github/workflows/sync-labels.yml on push to main and daily.
+# See: docs/superpowers/specs/2026-05-28-gh-projects-organization-design.md §"Label schema"
+
+- name: "area:engineering"
+  color: "1d76db" # blue — the default
+  description: "Work primarily in code (default for new Epics/Features/Stories/Tasks)"
+
+- name: "area:docs"
+  color: "0e8a16" # green
+  description: "Portal-maintenance work — drives the Documentation view on the Roadmap project"
+
+- name: "area:ux"
+  color: "d4c5f9" # light purple
+  description: "UX design / theme work"
+
+- name: "area:devops"
+  color: "fbca04" # yellow
+  description: "Release, CI/CD, deployment"
+
+- name: "area:infra"
+  color: "5319e7" # dark purple
+  description: "Shared infra — hosting, secrets, observability"
+
+- name: "regression"
+  color: "b60205" # red
+  description: "A Bug that previously worked (set automatically by intake workflow when Regression: yes)"
+
+- name: "breaking-change"
+  color: "e99695" # pink
+  description: "Requires migration or coordination across consumers"
+
+# repo:* — top-12 code repos that Features most often touch, plus catch-all.
+# Multi-tag: a Feature touching api + app + portal gets three repo:* labels.
+# When a new infusal/* repo starts seeing recurring Feature traffic, promote it
+# from repo:other to a first-class label here (and update the Feature template
+# checkboxes in infusal/roadmap/.github/ISSUE_TEMPLATE/feature.yml).
+
+- name: "repo:api"
+  color: "c2e0c6" # mint
+  description: "Touches infusal/api"
+
+- name: "repo:app"
+  color: "c2e0c6"
+  description: "Touches infusal/app"
+
+- name: "repo:agent"
+  color: "c2e0c6"
+  description: "Touches infusal/agent"
+
+- name: "repo:portal"
+  color: "c2e0c6"
+  description: "Touches infusal/portal"
+
+- name: "repo:webserver"
+  color: "c2e0c6"
+  description: "Touches infusal/webserver"
+
+- name: "repo:hub"
+  color: "c2e0c6"
+  description: "Touches infusal/hub"
+
+- name: "repo:core"
+  color: "c2e0c6"
+  description: "Touches infusal/core"
+
+- name: "repo:database"
+  color: "c2e0c6"
+  description: "Touches infusal/database"
+
+- name: "repo:plugin-sdk"
+  color: "c2e0c6"
+  description: "Touches infusal/plugin-sdk"
+
+- name: "repo:openapi"
+  color: "c2e0c6"
+  description: "Touches infusal/openapi"
+
+- name: "repo:roadmap"
+  color: "c2e0c6"
+  description: "Touches infusal/roadmap (planning artifacts)"
+
+- name: "repo:testscenarios"
+  color: "c2e0c6"
+  description: "Touches infusal/testscenarios"
+
+- name: "repo:other"
+  color: "ededed" # light gray — catch-all
+  description: "Touches an infusal/* repo not in the top-12 set; name the repo(s) in the issue body"
