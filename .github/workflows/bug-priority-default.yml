@@ -4,7 +4,12 @@ on:
     types: [opened, edited]
 jobs:
   default-priority:
-    if: contains(github.event.issue.labels.*.name, 'bug') || github.event.issue.labels.*.name == ''
+    # TODO when full implementation lands: filter to Bug-typed issues only,
+    # keying on the Issue Type field (per ADR-038, Issue Types are not labels).
+    # GitHub does not yet expose issue_type cleanly in github.event for action
+    # filters; the implementation should bail early inside the script if the
+    # project item's underlying issue isn't a Bug. Stub fires on every issue
+    # event — harmless because the body is console.log only.
     runs-on: ubuntu-latest
     steps:
       - name: Set Priority from Severity (only if Priority is empty)
