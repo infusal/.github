@@ -1,0 +1,52 @@
+name: Sync canonical labels to all infusal/* repos
+
+on:
+  push:
+    branches: [main]
+    paths: ["labels.yml"]
+  schedule:
+    - cron: "0 6 * * *" # daily at 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install github-label-sync
+        run: npm install -g github-label-sync
+
+      - name: List infusal/* repos to sync
+        id: repos
+        run: |
+          # Active code repos that receive the canonical label set.
+          # Distinct from the spec's repo:* label enumeration — this list
+          # is "which repos get synced to" (broader), not "which repos
+          # appear as repo:* labels" (narrower, 12 + other).
+          # Update when a new infusal/* code repo is created.
+          REPOS=(portal roadmap api app agent webserver hub core database \
+                 plugin-sdk openapi testscenarios mod-godoc godoc \
+                 common-claude infrastructure github-actions)
+          echo "repos=${REPOS[*]}" >> "$GITHUB_OUTPUT"
+
+      - name: Apply manifest to each repo
+        env:
+          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+        run: |
+          set -e
+          for repo in ${{ steps.repos.outputs.repos }}; do
+            echo "::group::Syncing infusal/$repo"
+            github-label-sync \
+              --access-token "$GH_TOKEN" \
+              --labels labels.yml \
+              --allow-added-labels \
+              "infusal/$repo"
+            echo "::endgroup::"
+          done

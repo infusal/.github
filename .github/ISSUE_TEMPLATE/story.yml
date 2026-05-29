@@ -1,0 +1,86 @@
+name: Story
+description: Repo-specific unit of work (roughly a phase within one repo)
+title: "[Story] "
+type: Story
+labels: ["story", "area:engineering"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: |
+        Primary area of work. Usually inherits from the parent Feature, but kept here so
+        Stories can be filtered independently and so the convention applies uniformly.
+        Default is `engineering`. If you change this dropdown to anything other than
+        `engineering`, also manually remove the `area:engineering` label and add the
+        matching `area:<your-choice>` label after creating the issue.
+      options:
+        - engineering
+        - docs
+        - ux
+        - devops
+        - infra
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: >
+        What does this Story accomplish in this repo? Focus on the
+        outcome for this repo, not the broader Feature.
+    validations:
+      required: true
+
+  - type: input
+    id: parent-phase
+    attributes:
+      label: Parent Phase (optional)
+      description: >
+        Link to parent Phase issue (e.g. `infusal/roadmap#nn`). Use when
+        the Feature is multi-repo and sliced into Phases. Becomes the
+        sub-issue parent — link manually after creation.
+      placeholder: "infusal/roadmap#nn"
+
+  - type: input
+    id: parent-feature
+    attributes:
+      label: Parent Feature (optional, if no Phase)
+      description: >
+        Link to parent Feature issue (e.g. `infusal/roadmap#nn`). Use when
+        the Feature is single-repo and has no Phases. Either Parent Phase
+        OR Parent Feature should be set — not both.
+      placeholder: "infusal/roadmap#nn"
+
+  - type: input
+    id: primary-capability
+    attributes:
+      label: Primary Capability (optional)
+      description: >
+        Issue reference of the Capability this Story serves
+        (e.g. `infusal/roadmap#nn`). Usually inherited from the parent
+        Phase/Feature — declare here only if this Story serves a
+        Capability beyond its parent's scope.
+      placeholder: "infusal/roadmap#nn"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: >
+        How do we know this Story is complete? Concrete, testable
+        statements per line.
+      placeholder: |
+        - DDL migration applies cleanly on a fresh database
+        - All existing integration tests still pass
+        - Migration is documented in MIGRATIONS.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: Open questions, dependencies on other Stories, risks.

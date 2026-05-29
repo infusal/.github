@@ -1,0 +1,45 @@
+name: Roadmap Story/Task plateau inheritance
+on:
+  issues:
+    types: [opened, edited]
+jobs:
+  inherit-plateau:
+    # TODO when full implementation lands: filter to Story- and Task-typed issues only,
+    # keying on the Issue Type field (per ADR-038, Issue Types are not labels).
+    # GitHub does not yet expose issue_type cleanly in github.event for action filters;
+    # the implementation should bail early inside the script if the project item's
+    # underlying issue isn't a Story or Task. Stub fires on every issue event —
+    # harmless because the body is console.log only.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inherit Plateau from parent Feature
+        uses: actions/github-script@v7
+        env:
+          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+        with:
+          script: |
+            // STUB — full implementation tracked in follow-up issue.
+            //
+            // For Story- and Task-typed issues newly added to the Roadmap project:
+            //
+            // 1. Walk the sub-issue parent chain to find the enclosing Feature.
+            //    The parent link is in the GitHub sub-issue tree (single-parent per
+            //    ADR-038 §4); query via GraphQL `issue { parent }` or the REST
+            //    sub-issues endpoint.
+            //
+            // 2. Read the parent Feature's Plateau field from the Roadmap project
+            //    (project number 9, owner infusal). Use the same field-value query
+            //    pattern as the Bug intake stub's outline.
+            //
+            // 3. If the Story/Task isn't yet in the Roadmap project, add it via
+            //    addProjectV2ItemById.
+            //
+            // 4. Apply the inherited Plateau via updateProjectV2ItemFieldValue.
+            //
+            // See spec: docs/superpowers/specs/2026-05-28-gh-projects-organization-design.md
+            //   §"Project automation rules (intake defaults)" (Roadmap project)
+            //
+            // Follow-up issue: file in infusal/.github titled
+            //   "Implement Roadmap Story/Task plateau inheritance"
+            //   and link this workflow from it.
+            console.log("STUB: inherit Plateau from parent Feature per spec");
