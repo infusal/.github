@@ -22,6 +22,10 @@
   color: "5319e7" # dark purple
   description: "Shared infra — hosting, secrets, observability"
 
+- name: "area:platform"
+  color: "006b75" # teal
+  description: "Platform & developer-experience work — drives membership of the Platform project board"
+
 - name: "regression"
   color: "b60205" # red
   description: "A Bug that previously worked (set automatically by intake workflow when Regression: yes)"
