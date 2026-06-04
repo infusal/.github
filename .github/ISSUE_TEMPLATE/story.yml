@@ -79,6 +79,22 @@ body:
     validations:
       required: true
 
+  - type: checkboxes
+    id: dod-story
+    attributes:
+      label: Story DoD
+      description: >
+        Always apply. Full per-level checklist:
+        https://portal.infusal.io/reference/conventions/spine-decomposition/
+      options:
+        - label: Merged to main (trunk-based, fast-forward-only); branch named {issue-number}-<desc>
+        - label: Unit tests added using mock backing services (no runtime deps)
+        - label: Codecov status check green (coverage gate not regressed)
+        - label: golangci-lint clean and conventional-commit messages
+        - label: Full CI pipeline green
+        - label: godoc on added/changed exported symbols
+        - label: Linked to its Feature
+
   - type: textarea
     id: notes
     attributes:

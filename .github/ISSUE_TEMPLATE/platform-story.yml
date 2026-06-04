@@ -1,0 +1,18 @@
+name: Platform Story
+description: Repo-specific unit of platform / developer-experience work (not capability-aligned)
+title: "[Platform] "
+type: Story
+labels: ["area:platform"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What needs doing, and why it is platform/infra rather than a capability feature.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        This issue routes to the **Platform** board (`area:platform`). A triager
+        will set the `Area` and `Priority` from the _Needs triage_ view.
