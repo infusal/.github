@@ -45,6 +45,18 @@ body:
       placeholder: "#nn"
 
   - type: textarea
+    id: acceptance
+    attributes:
+      label: Done when
+      description: >
+        One or two concrete completion statements for this commit-sized
+        change. Inherits the Story DoD; see
+        https://portal.infusal.io/reference/conventions/spine-decomposition/
+      placeholder: |
+        - Change merged with a conventional-commit message
+        - Covered by a unit test
+
+  - type: textarea
     id: notes
     attributes:
       label: Notes (optional)
