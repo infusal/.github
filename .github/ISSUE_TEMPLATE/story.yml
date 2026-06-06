@@ -93,6 +93,8 @@ body:
         - label: golangci-lint clean and conventional-commit messages
         - label: Full CI pipeline green
         - label: godoc on added/changed exported symbols
+        - label: SAST clean (gosec, via golangci-lint)
+        - label: No newly-introduced dependency/CVE vulnerabilities (govulncheck; warn-only today)
         - label: Linked to its Feature
 
   - type: textarea
