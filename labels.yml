@@ -91,7 +91,3 @@
 - name: "repo:other"
   color: "ededed" # light gray — catch-all
   description: "Touches an infusal/* repo not in the top-12 set; name the repo(s) in the issue body"
-
-- name: "skip-changelog"
-  color: "c5def5" # pale blue
-  description: "Omit this PR from the public changelog (public-facing repos)"
