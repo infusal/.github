@@ -91,3 +91,7 @@
 - name: "repo:other"
   color: "ededed" # light gray — catch-all
   description: "Touches an infusal/* repo not in the top-12 set; name the repo(s) in the issue body"
+
+- name: "board-intake-digest"
+  color: "ededed" # light gray
+  description: "Marks the standing untyped-issue digest maintained by board intake"
