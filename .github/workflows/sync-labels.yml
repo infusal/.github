@@ -30,10 +30,21 @@ jobs:
           # Distinct from the spec's repo:* label enumeration — this list
           # is "which repos get synced to" (broader), not "which repos
           # appear as repo:* labels" (narrower, 12 + other).
-          # Update when a new infusal/* code repo is created.
+          #
+          # Update when a new infusal/* code repo is created. That has been
+          # missed often enough to matter: fourteen repos were absent when this
+          # was last reconciled, so a bug filed in any of them could not carry
+          # the area:* or regression labels its own issue template promises.
+          # Cross-check with:
+          #   gh repo list infusal --limit 100 \
+          #     --json name,isArchived,isFork \
+          #     -q '.[]|select(.isArchived==false and .isFork==false)|.name'
           REPOS=(portal roadmap api app agent webserver hub core database \
                  plugin-sdk openapi testscenarios mod-godoc godoc \
-                 common-claude infrastructure github-actions)
+                 common-claude infrastructure github-actions \
+                 infusal.io theme-infusal connectors monitor stack \
+                 mod-clidoc mod-openapi mod-json-schema mod-catalog \
+                 mod-connectors demoapp mgmt-console go-template web-template)
           echo "repos=${REPOS[*]}" >> "$GITHUB_OUTPUT"
 
       - name: Apply manifest to each repo
