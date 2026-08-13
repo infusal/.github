@@ -25,39 +25,59 @@ jobs:
 
       - name: List infusal/* repos to sync
         id: repos
+        env:
+          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
         run: |
-          # Active code repos that receive the canonical label set.
-          # Distinct from the spec's repo:* label enumeration — this list
-          # is "which repos get synced to" (broader), not "which repos
-          # appear as repo:* labels" (narrower, 12 + other).
+          # Derived, not hand-maintained. The list this replaced carried the
+          # instruction "update when a new infusal/* code repo is created",
+          # which had been missed fourteen times — and a repo absent from it
+          # silently loses the area:* and regression labels its own issue
+          # template applies, so bugs filed there sort with nothing else.
           #
-          # Update when a new infusal/* code repo is created. That has been
-          # missed often enough to matter: fourteen repos were absent when this
-          # was last reconciled, so a bug filed in any of them could not carry
-          # the area:* or regression labels its own issue template promises.
-          # Cross-check with:
-          #   gh repo list infusal --limit 100 \
-          #     --json name,isArchived,isFork \
-          #     -q '.[]|select(.isArchived==false and .isFork==false)|.name'
-          REPOS=(portal roadmap api app agent webserver hub core database \
-                 plugin-sdk openapi testscenarios mod-godoc godoc \
-                 common-claude infrastructure github-actions \
-                 infusal.io theme-infusal connectors monitor stack \
-                 mod-clidoc mod-openapi mod-json-schema mod-catalog \
-                 mod-connectors demoapp mgmt-console go-template web-template)
-          echo "repos=${REPOS[*]}" >> "$GITHUB_OUTPUT"
+          # Excluded, and why:
+          #   archived — read-only, so any label the manifest adds returns 403.
+          #              Four exist today (docswip, source-postgres,
+          #              target-duckdb, target-postgres).
+          #   forks    — their labels belong to the upstream project.
+          #
+          # This is deliberately broader than the spec's repo:* label
+          # enumeration: that one answers "which repos appear as a repo:*
+          # label" (narrower, 12 + other), this one answers "which repos
+          # receive the canonical set".
+          repos=$(gh repo list infusal --limit 200 \
+                    --json name,isArchived,isFork \
+                    --jq '[.[] | select(.isArchived == false and .isFork == false) | .name] | sort | join(" ")')
+
+          # An empty result would turn the whole job into a silent no-op, which
+          # looks identical to a successful sync in the run list.
+          if [ -z "$repos" ]; then
+            echo "::error::no repositories resolved from infusal/* — refusing to run a no-op sync"
+            exit 1
+          fi
+
+          echo "Syncing $(echo "$repos" | wc -w) repos: $repos"
+          echo "repos=$repos" >> "$GITHUB_OUTPUT"
 
       - name: Apply manifest to each repo
         env:
           GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
         run: |
-          set -e
+          # Every repo is attempted even if an earlier one fails. The list is
+          # derived now, so it picks up repos this job has never touched — one
+          # of them being unreachable must not strand every repo after it in
+          # the loop, unnoticed, until someone reads the log.
+          failed=()
           for repo in ${{ steps.repos.outputs.repos }}; do
             echo "::group::Syncing infusal/$repo"
             github-label-sync \
               --access-token "$GH_TOKEN" \
               --labels labels.yml \
               --allow-added-labels \
-              "infusal/$repo"
+              "infusal/$repo" || failed+=("$repo")
             echo "::endgroup::"
           done
+
+          if [ ${#failed[@]} -gt 0 ]; then
+            echo "::error::label sync failed for ${#failed[@]} repo(s): ${failed[*]}"
+            exit 1
+          fi
