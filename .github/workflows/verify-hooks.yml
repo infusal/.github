@@ -1,0 +1,38 @@
+name: verify-hooks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-hooks:
+    name: Verify hook behavior
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install commitlint
+        # @commitlint/cli, not the Go conventionalcommit/commitlint, which panics
+        # on a BREAKING CHANGE footer. Installed under $HOME rather than the
+        # default global prefix on purpose: hack/verify-hooks.sh asserts the
+        # missing-binary path by running the hook with HOME=/nonexistent, which
+        # only works while the tool lives under $HOME.
+        run: |
+          npm config set prefix "$HOME/.npm-global"
+          npm install -g @commitlint/cli@21 @commitlint/config-conventional@21
+          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+
+      # The script invokes .commitlint/hooks/commit-msg directly, so it needs no
+      # core.hooksPath and no Go toolchain -- this variant asserts the commit-msg
+      # hook only. See infusal/go-template#33.
+      - name: Run verify-hooks.sh
+        run: ./hack/verify-hooks.sh

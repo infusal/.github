@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+# Lint the commit message with @commitlint/cli (the Node commitlint).
+#
+# This repo deliberately does NOT use github.com/conventionalcommit/commitlint
+# (the Go binary). That tool panics on a Conventional Commits `BREAKING CHANGE:`
+# footer -- index out of range [-1] in conventionalcommit/parser@v0.8.0 -- which
+# made a breaking-change commit impossible to write anywhere in the fleet. Its
+# parser is the latest release and upstream has been dormant since 2026-02, so
+# there is nothing to upgrade to. See infusal/github-actions#131 and #134.
+#
+# Linting with the same family that computes the version (semantic-release is
+# Node) also removes the drift class that caused #131: the Go linter accepted
+# `fix(x)!:` while the Node analyzer silently ignored it.
+#
+# Config is supplied with --extends, so this Go repo needs no package.json, no
+# node_modules and no commitlint config file.
+
+# Ensure Node and Go tooling are discoverable when hooks run outside a login
+# shell (e.g. VSCode's Git extension), which does not source ~/.zshrc or
+# ~/.bashrc. hack/verify-hooks.sh runs this file under `env -i PATH=/usr/bin:/bin`
+# and asserts it still succeeds silently, so this line is load-bearing, not
+# decoration. Keep hack/verify-hooks.sh's hook_fallback_path in step with it.
+#
+# The last two entries are the Windows layout. npm on Windows installs global
+# executables DIRECTLY into the prefix -- there is no `bin/` subdirectory -- so
+# `${HOME}/.npm-global/bin` can never match there, and the default prefix is
+# `%APPDATA%\npm`, which for a default profile is `${HOME}/AppData/Roaming/npm`
+# in the POSIX form Git Bash needs. A `PATH` entry that does not exist costs
+# nothing, so both platforms carry both sets rather than branching.
+export PATH="${PATH}:/opt/homebrew/bin:/usr/local/bin:/usr/local/go/bin:${HOME}/go/bin:${HOME}/.npm-global/bin:${HOME}/.npm-global:${HOME}/AppData/Roaming/npm"
+
+# A roaming profile can redirect %APPDATA% away from ${HOME}, so resolve it
+# directly when Git Bash's path converter is present. On Unix `command -v` is a
+# builtin miss and nothing forks; cygpath runs only where it exists.
+if [ -n "${APPDATA:-}" ] && command -v cygpath >/dev/null 2>&1; then
+	export PATH="${PATH}:$(cygpath -u "${APPDATA}")/npm"
+fi
+
+if ! type commitlint >/dev/null 2>/dev/null; then
+	echo ""
+	echo "commitlint could not be found."
+	echo ""
+	echo "  npm install -g @commitlint/cli @commitlint/config-conventional"
+	echo ""
+	exit 2
+fi
+
+# Stay silent on success so IDE Git extensions don't surface the check as a
+# notification. On failure, replay captured output so the developer sees the
+# actual validation errors.
+#
+# `lint_status=$?` immediately follows the assignment, which carries the command
+# substitution's status. Do NOT restructure this as `if cmd; then exit 0; fi`
+# followed by `status=$?`: in POSIX sh that reads ZERO -- the status of the `if`,
+# not of the condition -- and the hook then accepts every commit while printing
+# its own failure message. That was this hook's first draft.
+lint_output=$(commitlint --extends @commitlint/config-conventional --edit "$1" 2>&1)
+lint_status=$?
+if [ $lint_status -eq 0 ]; then
+	exit 0
+fi
+
+# A non-zero exit is normally a real lint failure. The one ambiguous case is the
+# retired Go commitlint still winning the PATH race: it does not understand these
+# flags and exits non-zero with a usage dump that reads just like a lint error.
+#
+# Distinguish, and fall back rather than blocking the commit. While the fleet
+# migration is in flight a machine may still need the Go binary for repos that
+# have not been converted yet, so this hook must not depend on it being gone --
+# and adding @commitlint/cli is as breaking for unconverted repos as removing the
+# Go binary is for converted ones. The probe costs an extra process only on the
+# failure path.
+if ! commitlint --version 2>/dev/null | grep -q '@commitlint/cli'; then
+	fallback_output=$(npx --yes --package @commitlint/cli@21 \
+		--package @commitlint/config-conventional@21 \
+		-- commitlint --extends @commitlint/config-conventional --edit "$1" 2>&1)
+	fallback_status=$?
+	if [ $fallback_status -ne 0 ]; then
+		printf '%s\n' "$fallback_output"
+	fi
+	exit $fallback_status
+fi
+
+printf '%s\n' "$lint_output"
+exit $lint_status
