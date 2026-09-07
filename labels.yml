@@ -34,6 +34,17 @@
   color: "e99695" # pink
   description: "Requires migration or coordination across consumers"
 
+# The only label a maturity rung reads. ADR-044 derives `Optimized` from
+# `Implemented` plus a closed in-scope item wearing this, which makes it the one
+# rung raised by an existential claim — the lower three are universal over the
+# item set, so adding an object cannot raise them. One closed labelled object
+# raises this one, so the description carries the two bounds a filer needs:
+# the capability must already be shipped, and a retrospective spine never
+# qualifies. See /engineering/delivery/issue-board-workflow/.
+- name: "hardening"
+  color: "1a7f37" # green
+  description: "Hardening of an already-shipped capability (ADR-044 Optimized). Never on a retrospective spine."
+
 # repo:* — top-12 code repos that Features most often touch, plus catch-all.
 # Multi-tag: a Feature touching api + app + portal gets three repo:* labels.
 # When a new infusal/* repo starts seeing recurring Feature traffic, promote it
