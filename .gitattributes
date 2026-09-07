@@ -1,0 +1,5 @@
+# Shell scripts and git hooks must use LF endings so Git Bash on Windows
+# (which runs hooks via /bin/sh) does not choke on CRLF in the shebang line.
+*.sh                   text eol=lf
+.commitlint/hooks/*    text eol=lf
+.husky/*               text eol=lf

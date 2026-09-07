@@ -41,3 +41,16 @@ For the full design rationale see [ADR-024 — Issue tracking hierarchy](https:/
 | `bug.yml` | ✅ | Open a PR directly against this repo. |
 | Epic / Feature / Phase | ❌ (live elsewhere) | Edit `.github/ISSUE_TEMPLATE/` in `infusal/roadmap` directly. |
 | Capability | ❌ (live elsewhere) | Edit `content/product/capability-map/` in `infusal/portal`. |
+
+## Contributing
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org), enforced by a `commit-msg` hook that runs [commitlint](https://commitlint.js.org).
+
+Cloning does not install the hook. `core.hooksPath` is local repository configuration, which git deliberately does not carry across a clone, so every working copy sets it once:
+
+```bash
+npm install -g @commitlint/cli@21 @commitlint/config-conventional@21
+git config core.hooksPath .commitlint/hooks
+```
+
+The hook passes its rules on the command line with `--extends`, so this repository needs no `package.json`, no `node_modules` and no commitlint config file. It stays silent on success, and it searches the usual global-install locations on macOS, Linux and Windows, so no `npm config set prefix` step is required.
