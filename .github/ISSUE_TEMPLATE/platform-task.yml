@@ -15,6 +15,6 @@ body:
     attributes:
       value: |
         This issue routes to the **Platform** board (`area:platform`). A triager
-        will set the `Area` (API / Plugin SDK / Shared libraries / Data model /
-        Observability / Web platform / Repo & tooling) and `Priority` from the
-        _Needs triage_ view.
+        will set the `Area` (API / Plugin platform / Core libraries / Data model /
+        Observability / Web platform / Deployment & release / Security /
+        Repo & tooling) and `Priority` from the _Needs triage_ view.
